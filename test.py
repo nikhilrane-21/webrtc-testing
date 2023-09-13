@@ -115,6 +115,7 @@ def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
 webrtc_streamer(
     key=key,
     mode=WebRtcMode.RECVONLY,
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
     media_stream_constraints={
         "video": media_file_info["type"] == "video",
         "audio": False,
