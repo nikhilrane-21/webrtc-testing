@@ -165,25 +165,25 @@ if task_name == task_list[2]:
         st.subheader("Output:")
         st.image(image)
 
-if task_name == task_list[3]:
-    cap = cv2.VideoCapture(0)
-    if st.button("Start"):
-        frame_container = st.empty()
-        with tf.Session(graph=graph) as sess:
-            ops = graph.get_operations()
-            all_tensor_names = {output.name for op in ops for output in op.outputs}
-            tensor_dict = {}
-            for key in [
-                'num_detections', 'detection_boxes', 'detection_scores',
-                'detection_classes', 'detection_masks'
-            ]:
-                tensor_name = key + ':0'
-                if tensor_name in all_tensor_names:
-                    tensor_dict[key] = graph.get_tensor_by_name(tensor_name)
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                frame_base64 = webcam_processing(category_index, frame, sess, tensor_dict) 
-                frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
-        cap.release()
+# if task_name == task_list[3]:
+#     cap = cv2.VideoCapture(0)
+#     if st.button("Start"):
+#         frame_container = st.empty()
+#         with tf.Session(graph=graph) as sess:
+#             ops = graph.get_operations()
+#             all_tensor_names = {output.name for op in ops for output in op.outputs}
+#             tensor_dict = {}
+#             for key in [
+#                 'num_detections', 'detection_boxes', 'detection_scores',
+#                 'detection_classes', 'detection_masks'
+#             ]:
+#                 tensor_name = key + ':0'
+#                 if tensor_name in all_tensor_names:
+#                     tensor_dict[key] = graph.get_tensor_by_name(tensor_name)
+#             while True:
+#                 ret, frame = cap.read()
+#                 if not ret:
+#                     break
+#                 frame_base64 = webcam_processing(category_index, frame, sess, tensor_dict) 
+#                 frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
+#         cap.release()
