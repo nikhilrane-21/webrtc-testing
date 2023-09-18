@@ -26,8 +26,10 @@ if __name__ == "__main__":
 
         vf = cv2.VideoCapture(tfile.name)
 
+        stframe = st.empty()
+
         for frame in generate_frames(vf):
             # Display the frame in an HTML img element
-            st.markdown(f'<img src="data:image/jpeg;base64,{frame}"/>', unsafe_allow_html=True)
+            stframe.markdown(f'<img src="data:image/jpeg;base64,{frame}"/>', unsafe_allow_html=True)
 
         vf.release()
