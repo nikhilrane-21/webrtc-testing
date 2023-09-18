@@ -11,14 +11,14 @@ import base64
 
 st.set_page_config(page_title="Streamlit Helmet Vest Hardhat Detection Demo", page_icon="🤖")
 hide_streamlit_style = """
-<style>
-MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-</style>
-"""
+            <style>
+            MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-task_list = ["Camera", "Video", "RTSP", "Image"]
+task_list = ["Video", "RTSP", "Image"]
 
 with st.sidebar:
     st.title('Source Selection')
@@ -103,29 +103,6 @@ category_index = {1: {'id': 1, 'name': 'hardhat'},
                   3: {'id': 3, 'name': 'person'}}
 
 if task_name == task_list[0]:
-    cap = cv2.VideoCapture(0)
-    if st.button("Start"):
-        frame_container = st.empty()
-        with tf.Session(graph=graph) as sess:
-            ops = graph.get_operations()
-            all_tensor_names = {output.name for op in ops for output in op.outputs}
-            tensor_dict = {}
-            for key in [
-                'num_detections', 'detection_boxes', 'detection_scores',
-                'detection_classes', 'detection_masks'
-            ]:
-                tensor_name = key + ':0'
-                if tensor_name in all_tensor_names:
-                    tensor_dict[key] = graph.get_tensor_by_name(tensor_name)
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                frame_base64 = webcam_processing(category_index, frame, sess, tensor_dict) 
-                frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
-        cap.release()
-
-if task_name == task_list[1]:
     uploaded_file = st.file_uploader("Choose a video file", type=["mp4", "avi", "mkv", "mov"])
     if uploaded_file is not None:
         with tempfile.NamedTemporaryFile(suffix=".mp4") as temp_file:
@@ -153,7 +130,7 @@ if task_name == task_list[1]:
                         frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
                 cap.release()
 
-if task_name == task_list[2]:
+if task_name == task_list[1]:
     rtsp_link = st.text_input("Enter the RTSP link")
     if rtsp_link:
         cap = cv2.VideoCapture(rtsp_link)
@@ -179,7 +156,7 @@ if task_name == task_list[2]:
                     frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
                 cap.release()
 
-if task_name == task_list[3]:
+if task_name == task_list[2]:
     uploaded_file = st.file_uploader("Choose a image file", type=["png", "jpeg", "jpg", "tif"])
     if uploaded_file is not None:
         pil_image = Image.open(uploaded_file)
@@ -187,3 +164,26 @@ if task_name == task_list[3]:
         image = image_processing(graph, category_index, image)
         st.subheader("Output:")
         st.image(image)
+
+if task_name == task_list[3]:
+    cap = cv2.VideoCapture(0)
+    if st.button("Start"):
+        frame_container = st.empty()
+        with tf.Session(graph=graph) as sess:
+            ops = graph.get_operations()
+            all_tensor_names = {output.name for op in ops for output in op.outputs}
+            tensor_dict = {}
+            for key in [
+                'num_detections', 'detection_boxes', 'detection_scores',
+                'detection_classes', 'detection_masks'
+            ]:
+                tensor_name = key + ':0'
+                if tensor_name in all_tensor_names:
+                    tensor_dict[key] = graph.get_tensor_by_name(tensor_name)
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                frame_base64 = webcam_processing(category_index, frame, sess, tensor_dict) 
+                frame_container.markdown(f'<img src="data:image/jpeg;base64,{frame_base64}"/>', unsafe_allow_html=True)
+        cap.release()
